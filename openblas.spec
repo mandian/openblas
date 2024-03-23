@@ -15,7 +15,9 @@ Summary: Optimized BLAS library
 URL: https://github.com/openblas/openblas
 License: BSD-3-Clause
 Group: System/Libraries
-BuildRequires: cmake
+BuildRequires:	cmake
+BuildRequires:	ninja
+BuildRequires:	gcc-gfortran
 
 %description
 OpenBLAS is an optimized BLAS (Basic Linear Algebra Subprograms) library based
@@ -43,7 +45,6 @@ Development files (Headers etc.) for %{name}.
 
 %build
 %ninja_build -C build
-exit 1
 
 %install
 %ninja_install -C build
