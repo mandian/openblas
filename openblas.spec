@@ -61,7 +61,8 @@ BuildRequires:	pkgconfig(lapack)
 Summary:	An optimized BLAS library based on GotoBLAS2
 Group:		System/Libraries
 
-%description %_description -n %{libname}
+%description -n %{libname} %_description
+
 This package contains the sequential library.
 
 %files -n %{libname}
@@ -77,7 +78,7 @@ This package contains the sequential library.
 Summary:	An optimized BLAS library based on GotoBLAS2
 Group:		System/Libraries
 
-%description %_description -n %{libpname}
+%description -n %{libpname} %_description
 This package contains library compiled with threading support.
 
 %files -n %{libpname}
@@ -93,7 +94,7 @@ This package contains library compiled with threading support.
 Summary:	An optimized BLAS library based on GotoBLAS2
 Group:		System/Libraries
 
-%description %_description -n %{liboname}
+%description -n %{liboname} %_description
 This package contains library compiled with OpenMP support.
 
 %files -n %{liboname}
@@ -106,13 +107,13 @@ This package contains library compiled with OpenMP support.
 #---------------------------------------------------------------------------
 
 %package -n %{devname}
-Summary: Development files for %{name}
-Group: Development/C
-Requires: %{libname} = %{EVRD}
-Requires: %{lipbname} = %{EVRD}
-Requires: %{liobname} = %{EVRD}
+Summary:	Development files for %{name}
+Group:		Development/C
+Requires:	%{libname} = %{EVRD}
+Requires:	%{libpname} = %{EVRD}
+Requires:	%{liboname} = %{EVRD}
 
-%description %_description -n %{devname}
+%description -n %{devname} %_description
 Development files (Headers etc.) for %{name}.
 
 %files -n %{devname}
