@@ -147,8 +147,8 @@ do
 done
 
 %build
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 export FC=gfortran
 
 %set_build_flags
