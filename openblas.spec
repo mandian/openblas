@@ -176,15 +176,16 @@ GENERIC_OPTIONS+=" NUM_THREADS=128"
 cd ..
 for d in {SERIAL,THREADED,OPENMP}%{?arch64:{,64}}
 do
+
 	# build flags
-	COMMON="'%{optflags}' -fPIC"
+	COMMON="%{optflags} -fPIC"
 	FCOMMON="$COMMON -frecursive"
 
-	if [[ !"$d" =~ "THREADED" ]]; then
+	if [[ ! "$d" =~ "THREADED" ]]; then
 		LIBPREFIX=lib%{pname}
 		USE_OPENMP=0
 		USE_THREAD=1
-	elif [[ !"$d" =~ "OPENMP" ]]; then
+	elif [[ ! "$d" =~ "OPENMP" ]]; then
 		LIBPREFIX=lib%{oname}
 		USE_OPENMP=1
 		USE_THREAD=1
