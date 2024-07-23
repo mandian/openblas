@@ -14,9 +14,9 @@
 %bcond cblas		1
 %bcond lapack		1
 %bcond lapacke		1
-%bcond relapack		1
+%bcond relapack		0
 %bcond static		1
-%bcond testing		0
+%bcond testing		1
 
 %global optflags %{optflags} -O3
 
@@ -219,10 +219,8 @@ do
 		INTERFACE64=$INTERFACE64 \
 		LIBPREFIX=$LIBPREFIX \
 		%nil
-done
 
-#for d in {SERIAL%{?with_static:,STATIC}}%{?arch64:{,64}}
-#do
+#	pushd OpenBLAS-%{version}-$d
 #	%%cmake -Wno-dev \
 #		-DBUILD_STATIC_LIBS:BOOL=OFF \
 #		-DBUILD_SHARED_LIBS:BOOL=ON \
@@ -231,14 +229,14 @@ done
 #		-DBUILD_WITHOUT_CBLAS:BOOL=%{?with_cblas:OFF}%{?!with_cblas:ON} \
 #		-DBUILD_WITHOUT_LAPACK:BOOL=%{?with_lapack:OFF}%{?!with_lapack:ON} \
 #		-DBUILD_TESTINGBOOL=%{?with_testing:ON}%{?!with_testing:OFF} \
-#		-dUSE_LOCKING:BOOL=ON \
+#		-DUSE_LOCKING:BOOL=ON \
 #		-DNO_AFFINITY:BOOL=ON \
 #		-DNO_WARMUP:BOOL=ON \
 #		-GNinja
-#	%ninja_build
-#	cd ..
+#	%%ninja_build
+#	popd
 #	mv %%_vpath_builddir %%_vpath_builddir-SHARED
-#done
+done
 
 %install
 # SERIAL
