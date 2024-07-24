@@ -164,9 +164,10 @@ MAKE_OPTIONS+=" NO_LAPACKE=1"
 %endif
 
 # architectures with dynamic arch selection
-%ifarch %{ix86} x86_64 aarch64
+%ifarch %{ix86} x86_64
 TARGET_OPTIONS+=" DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 TARGET=C"ORE2
-%elif aarch64
+%endif
+%ifarch aarch64
 TARGET_OPTIONS+=" DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 TARGET=ARMV8"
 %endif
 
@@ -181,11 +182,11 @@ do
 	COMMON="%{optflags} -fPIC"
 	FCOMMON="$COMMON -frecursive"
 
-	if [[ ! "$d" =~ "THREADED" ]]; then
+	if [[ "$d" =~ "THREADED" ]]; then
 		LIBPREFIX=lib%{pname}
 		USE_OPENMP=0
 		USE_THREAD=1
-	elif [[ ! "$d" =~ "OPENMP" ]]; then
+	elif [[ "$d" =~ "OPENMP" ]]; then
 		LIBPREFIX=lib%{oname}
 		USE_OPENMP=1
 		USE_THREAD=1
@@ -196,7 +197,7 @@ do
 		USE_THREAD=0
 	fi
 
-	if [[ ! "$d" =~ "64" ]]; then
+	if [[ "$d" =~ "64" ]]; then
 		INTERFACE64=ON
 		LIBPREFIX=${LIBPREFIX}64
 		FCOMMON+=" -fdefault-integer-8"
