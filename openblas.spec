@@ -16,7 +16,7 @@
 %bcond lapacke		1
 %bcond relapack		0
 %bcond static		1
-%bcond testing		1
+%bcond testing		0
 
 %global optflags %{optflags} -O3
 
@@ -184,15 +184,18 @@ do
 
 	if [[ "$d" =~ "THREADED" ]]; then
 		LIBPREFIX=lib%{pname}
+		USE_LOCKING=0
 		USE_OPENMP=0
 		USE_THREAD=1
 	elif [[ "$d" =~ "OPENMP" ]]; then
 		LIBPREFIX=lib%{oname}
+		USE_LOCKING=0
 		USE_OPENMP=1
 		USE_THREAD=1
 		COMMON+=" -fopenmp -pthread"
 	else
 		LIBPREFIX=lib%{name}
+		USE_LOCKING=1
 		USE_OPENMP=0
 		USE_THREAD=0
 	fi
@@ -214,7 +217,7 @@ do
 		$GENERIC_OPTIONS\
 		COMMON_OPT="$COMMON" \
 		FCOMMON_OPT="$FCOMMON" \
-		USE_LOCKING=1 \
+		USE_LOCKING=$USE_LOCKING \
 		USE_THREAD=$USE_THREAD \
 		USE_OPENMP=$USE_OPENMP \
 		INTERFACE64=$INTERFACE64 \
