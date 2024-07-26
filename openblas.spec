@@ -149,12 +149,12 @@ do
 done
 
 %build
-#export CC=gcc
-#export CXX=g++
+export CC=gcc
+export CXX=g++
 export FC=gfortran
 
 %set_build_flags
-%global optflags %{optflags} -frecursive -fno-optimize-sibling-calls
+#global optflags %{optflags} -frecursive -fno-optimize-sibling-calls
 MAKE_OPTIONS="NO_AFFINITY=1 NO_WARMUP=1"
 
 # disable parallel build
@@ -211,7 +211,7 @@ do
 	fi
 
 	# build
-	%make_build -j1 -C OpenBLAS-%{version}-$d \
+	%make_build -C OpenBLAS-%{version}-$d \
 		CC=$CC CFLAGS="$CFLAGS" \
 		FC=$FC FFLAGS="$FFLAGS" \
 		$MAKE_OPTIONS \
