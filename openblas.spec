@@ -5,6 +5,8 @@
 %define devname	%mklibname %{name} -d
 %define docname	%{name}-doc
 
+%define prefer_gcc 1
+
 # For now -- since C code (built with clang) and
 # Fortran code (built with gfortran) are linked
 # together, LTO object files don't work
@@ -209,7 +211,7 @@ do
 	fi
 
 	# build
-	%make_build -C OpenBLAS-%{version}-$d \
+	%make_build -j1 -C OpenBLAS-%{version}-$d \
 		CC=$CC CFLAGS="$CFLAGS" \
 		FC=$FC FFLAGS="$FFLAGS" \
 		$MAKE_OPTIONS \
