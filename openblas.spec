@@ -194,7 +194,7 @@ do
 		USE_LOCKING=0
 		USE_OPENMP=1
 		USE_THREAD=1
-		COMMON+=" -fopenmp -pthread"
+		FCOMMON+=" -fopenmp"
 	else
 		LIBPREFIX=lib%{name}
 		USE_LOCKING=1
