@@ -5,7 +5,7 @@
 %define devname	%mklibname %{name} -d
 %define docname	%{name}-doc
 
-%define prefer_gcc 1
+#define prefer_gcc 1
 
 # For now -- since C code (built with clang) and
 # Fortran code (built with gfortran) are linked
@@ -181,7 +181,8 @@ for d in {SERIAL,THREADED,OPENMP}%{?arch64:{,64}}
 do
 
 	# build flags
-	COMMON="%{optflags} -fPIC"
+	#COMMON="%{optflags} -fPIC"
+	COMMON=" -fPIC"
 	FCOMMON="$COMMON -frecursive"
 
 	if [[ "$d" =~ "THREADED" ]]; then
