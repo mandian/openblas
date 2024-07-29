@@ -20,7 +20,7 @@
 %bcond static		1
 %bcond testing		0
 
-%global optflags %{optflags} -O3
+#global optflags %{optflags} -O3
 
 %if %{?__isa_bits:%{__isa_bits}}%{!?__isa_bits:32} == 64
 %global arch64 1
@@ -149,8 +149,8 @@ do
 done
 
 %build
-export CC=gcc
-export CXX=g++
+#export CC=gcc
+#export CXX=g++
 export FC=gfortran
 
 %set_build_flags
