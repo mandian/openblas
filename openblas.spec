@@ -204,11 +204,11 @@ do
 	fi
 
 	if [[ "$d" =~ "64" ]]; then
-		INTERFACE64=ON
+		INTERFACE64=1
 		LIBPREFIX=${LIBPREFIX}64
 		FCOMMON+=" -fdefault-integer-8"
 	else
-		INTERFACE64=OFF
+		INTERFACE64=0
 	fi
 
 	# build
