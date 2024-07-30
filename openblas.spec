@@ -53,6 +53,7 @@ Patch1:         openblas-0.3.27-tests.patch
 BuildRequires:	cmake ninja
 BuildRequires:	gcc-gfortran
 BuildRequires:	pkgconfig(lapack)
+BuildRequires:	gomp-devel
 
 %description %_description
 
