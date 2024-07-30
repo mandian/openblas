@@ -156,10 +156,10 @@ export FC=gfortran
 
 %set_build_flags
 #global optflags %{optflags} -frecursive -fno-optimize-sibling-calls
-#MAKE_OPTIONS="NO_AFFINITY=1 NO_WARMUP=1"
+MAKE_OPTIONS="NO_AFFINITY=1 NO_WARMUP=1"
 
 # disable parallel build
-#MAKE_OPTIONS+=" NO_PARALLEL_MAKE=1"
+MAKE_OPTIONS+=" NO_PARALLEL_MAKE=1"
 
 # lapacke
 %if ! %{with lapacke}
@@ -213,7 +213,7 @@ do
 	fi
 
 	# build
-	make -C OpenBLAS-%{version}-$d \
+	%make_build -C OpenBLAS-%{version}-$d \
 		CC=$CC CFLAGS="$CFLAGS" \
 		FC=$FC FFLAGS="$FFLAGS" \
 		$MAKE_OPTIONS \
@@ -248,7 +248,7 @@ done
 
 %install
 # SERIAL
-%make_install -C OpenBLAS-SERIAL \
+%make_install -C OpenBLAS-%{version}-SERIAL \
 	USE_THREAD=0 PREFIX=%{buildroot} \
 	OPENBLAS_BINARY_DIR=%{buildroot}%{_bindir} \
 	OPENBLAS_CMAKE_DIR=%{buildroot}%{_libdir}/cmake \
@@ -256,13 +256,13 @@ done
 	OPENBLAS_LIBRARY_DIR=%{buildroot}%{_libdir}
 #ninja_install
 
-install -Dpm 0755 OpenBLAS-THREADED/lib%{pname}.so %{buildroot}%{_libdir}/lib%{pname}.so
-install -Dpm 0755 OpenBLAS-OPENMP/lib%{oname}.so %{buildroot}%{_libdir}/lib%{oname}.so
+install -Dpm 0755 OpenBLAS-%{version}-THREADED/lib%{pname}.so %{buildroot}%{_libdir}/lib%{pname}.so
+install -Dpm 0755 OpenBLAS-%{version}-OPENMP/lib%{oname}.so %{buildroot}%{_libdir}/lib%{oname}.so
 
 %if 0%{?arch64}
-install -Dpm 0755 OpenBLAS-SERIAL/lib%{name}64.so %{buildroot}%{_libdir}/lib%{name}64.so
-install -Dpm 0755 OpenBLAS-THREADED/lib%{pname}64.so %{buildroot}%{_libdir}/lib%{pname}64.so
-install -Dpm 0755 OpenBLAS-OPENMP/lib%{oname}64.so %{buildroot}%{_libdir}/lib%{oname}64.so
+install -Dpm 0755 OpenBLAS-%{version}-SERIAL/lib%{name}64.so %{buildroot}%{_libdir}/lib%{name}64.so
+install -Dpm 0755 OpenBLAS-%{version}-THREADED/lib%{pname}64.so %{buildroot}%{_libdir}/lib%{pname}64.so
+install -Dpm 0755 OpenBLAS-%{version}-OPENMP/lib%{oname}64.so %{buildroot}%{_libdir}/lib%{oname}64.so
 %endif
 
 # symlinks
