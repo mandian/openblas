@@ -1,0 +1,12 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -103,7 +103,7 @@
+ include("${PROJECT_SOURCE_DIR}/cmake/utils.cmake")
+ include("${PROJECT_SOURCE_DIR}/cmake/system.cmake")
+ 
+-set(OpenBLAS_LIBNAME ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64_UNDERSCORE})
++set(OpenBLAS_LIBNAME ${LIBNAMEPREFIX}openblas${LIBNAMESUFFIX}${SUFFIX64})
+ 
+ set(BLASDIRS interface driver/level2 driver/level3 driver/others)
+ 
+
