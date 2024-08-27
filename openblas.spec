@@ -45,11 +45,13 @@ Group:		Sciences/Mathematics
 License:	BSD-3-Clause
 URL:		https://github.com/OpenMathLib/OpenBLAS
 Source0:	https://github.com/OpenMathLib/OpenBLAS/archive/v%{version}/openblas-%{version}.tar.gz
+#Patch0:		openblas-0.3.28_prefix.patch
+Patch0:		openblas-0.3.27-suffix.patch
+Patch1:		openblas-0.3.27-suffix64.patch
 # (fedora)
-Patch0:		openblas-0.3.27-libname.patch
+Patch100:		openblas-0.3.27-libname.patch
 # (fedora) 
-Patch1:		openblas-0.3.27-tests.patch
-Patch2:		openblas-0.3.27-suffix64.patch
+Patch101:		openblas-0.3.27-tests.patch
 
 BuildRequires:	cmake ninja
 BuildRequires:	gcc-gfortran
@@ -122,7 +124,7 @@ Development files (Headers etc.) for %{name}.
 
 %files -n %{devname}
 %license LICENSE
-%doc OpenBLAS-SERIAL/Changelog.txt OpenBLAS-SERIAL/GotoBLAS*
+%doc Changelog.txt GotoBLAS*
 
 %{_includedir}/%{name}/
 %{_libdir}/pkgconfig/*
@@ -131,6 +133,7 @@ Development files (Headers etc.) for %{name}.
 %{_libdir}/lib%{oname}.so
 %{_libdir}/lib%{pname}.so
 %if 0%{?arch64}
+%{_includedir}/%{name}64/
 %{_libdir}/lib%{name}64.so
 %{_libdir}/lib%{oname}64.so
 %{_libdir}/lib%{pname}64.so
@@ -154,24 +157,29 @@ Development files (Headers etc.) for %{name}.
 export CC=gcc
 export CXX=g++
 export FC=gfortran
+#export FC=flang-new
+#export FFLAGS=1
+#export FCFLAGS=
 
 %set_build_flags
-%global optflags %{optflags} -fno-optimize-sibling-calls
-#-frecursive
+%global optflags %{optflags} -fno-optimize-sibling-calls 
+export CLANG_FLAGS="-mfpu=vfp -mfloat-abi=softfp -gcc-toolchain %{_libdir}/gcc/x86_64-openmandriva-linux-gnu/"
 
 # architectures
-TARGET_OPTIONS=" DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 "
+#TARGET_OPTIONS=" DYNAMIC_ARCH=1 DYNAMIC_OLDER=1 "
 %ifarch %{ix86} x86_64
-TARGET_OPTIONS+=" TARGET=CORE2"
+#TARGET_OPTIONS+=" TARGET=CORE2"
+TARGET="CORE2"
 %endif
 %ifarch aarch64
-TARGET_OPTIONS+=" TARGET=ARMV8"
+#TARGET_OPTIONS+=" TARGET=ARMV8"
+TARGET="ARMV8"
 %endif
 
 # hardcode the maximum possible amount of processors
 GENERIC_OPTIONS+=" "
 
-for d in {OPENMP,SERIAL,THREADED}%{?arch64:{,64}}
+for d in {SERIAL,THREADED,OPENMP}%{?arch64:{,64}}
 do
 
 	# build flags
@@ -179,21 +187,21 @@ do
 	FCOMMON="$COMMON -frecursive"
 
 	if [[ "$d" =~ "THREADED" ]]; then
-		#LIBPREFIX=lib%{pname}
-		LIBPREFIX=p
+		LIBPREFIX=lib%{pname}
+		LIBSUFFFIX=p
 		USE_LOCKING=0
 		USE_OPENMP=0
 		USE_THREAD=1
 	elif [[ "$d" =~ "OPENMP" ]]; then
-		#LIBPREFIX=lib%{oname}
-		LIBPREFIX=o
+		LIBPREFIX=lib%{oname}
+		LIBSUFFFIX=o
 		USE_LOCKING=0
 		USE_OPENMP=1
 		USE_THREAD=1
 		FCOMMON+=" -fopenmp"
 	else
-		#LIBPREFIX=lib%{name}
-		LIBPREFIX=
+		LIBPREFIX=lib%{name}
+		LIBSUFFFIX=
 		USE_LOCKING=1
 		USE_OPENMP=0
 		USE_THREAD=0
@@ -214,7 +222,9 @@ do
 #		FC=$FC FFLAGS="$FFLAGS" \
 #		COMMON_OPT="$COMMON" \
 #		FCOMMON_OPT="$FCOMMON" \
-#		$TARGET_OPTIONS \
+#		DYNAMIC_ARCH=1 \
+#		DYNAMIC_OLDER=1 \
+#		TARGET=$TARGET \
 #		NO_LAPACKE=%{?with_lapacke:OFF}%{?!with_lapacke:ON} \
 #		NO_AFFINITY=1 \
 #		NO_WARMUP=1 \
@@ -236,15 +246,20 @@ do
 		-DBUILD_WITHOUT_CBLAS:BOOL=%{?with_cblas:OFF}%{?!with_cblas:ON} \
 		-DBUILD_WITHOUT_LAPACK:BOOL=%{?with_lapack:OFF}%{?!with_lapack:ON} \
 		-DBUILD_TESTING:BOOL=%{?with_testing:ON}%{?!with_testing:OFF} \
-		-DUSE_OPENMP=$USE_OPENMP \
+		-DDYNAMIC_ARCH:BOOL=ON \
+		-DDYNAMIC_OLDER:BOOL=ON \
+		-DUSE_OPENMP:BOOL=$USE_OPENMP \
 		-DUSE_LOCKING:BOOL=$USE_LOCKING \
 		-DNO_AFFINITY:BOOL=ON \
 		-DNO_WARMUP:BOOL=ON \
+		-DTARGET:STRING=$TARGET \
+		-DUSE_THREAD:BOOL=$USE_THREAD \
 		-DNUM_THREADS=128 \
-		-DLIBNAMEPREFIX:STRING=$LIBPREFIX \
 		-DINTERFACE64:BOOL=$INTERFACE64 \
+		-DLIBNAMESUFFIX:STRING=$LIBSUFFFIX \
+		-DCMAKE_Fortran_COMPILER=$FC \
 		-GNinja
-	%ninja_build
+		%ninja_build
 	cd ..
 	mv %_vpath_builddir %_vpath_builddir-$d
 done
